@@ -1,0 +1,27 @@
+---
+title: "Callon sections (working file, not for submission)"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE,
+                      fig.width = 7, fig.height = 4)
+source("A2-data-cleaning.R")
+source("A2-style.R")
+```
+
+## Section 1: Has provincial reading changed since 2017?
+
+```{r s1-data}
+# School average share of students meeting the reading standard, by year.
+# 2019 and 2020 stay NA (no tests) so the line breaks there.
+trend <- elem |>
+  group_by(start_year) |>
+  summarise(`Grade 3` = mean(g3_read, na.rm = TRUE),
+            `Grade 6` = mean(g6_read, na.rm = TRUE),
+            .groups = "drop") |>
+  pivot_longer(-start_year, names_to = "grade", values_to = "pct") |>
+  complete(start_year = 2017:2024, grade)
+
+trend |> filter(!is.na(pct)) |> pivot_wider(names_from = grade, values_from = pct)
+```
