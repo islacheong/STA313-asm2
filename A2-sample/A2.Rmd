@@ -22,9 +22,7 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 ## Read from the same directory
 
-_Below code reads the `ont-sa-characteristic-ow-ont.csv` file uploaded in the
-same directory as the R Markdown file. You must also submit the data file with
-the submission._
+
 
 ```{r data_local}
 df <- read_csv("ont-sa-characteristic-ow-ont.csv")
