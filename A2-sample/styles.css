@@ -1,0 +1,20 @@
+/* set font for body text */
+body {
+  font-family: "Arial", Sans-Serif;
+  font-size: 12pt;
+}
+/* set font for headings */
+h1, h2, h3, h4, h5 {
+  font-family: "Times New Roman", serif;
+}
+/* remove margins around title, author name, and date */
+.title, .author, .date {
+  margin-block-end: 0;
+  margin-block-start: 0;
+}
+/* change alignment, style, and size of author name and date */
+.author, .date {
+  text-align: right;
+  font-style: italic;
+  font-size: .8em;
+}

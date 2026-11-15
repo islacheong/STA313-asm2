@@ -1,0 +1,53 @@
+---
+title: "Sample A2"
+author: "STA313H1 Teaching Team"
+output: 
+  pagedown::html_paged:
+    toc: false
+    number_sections: false
+    css:
+      - styles.css
+---
+
+```{r setup, include=FALSE}
+# Install required libraries at the beginning of the document
+# - assume tidyverse (which includes ggplot2, dplyr, etc.) is already installed
+# - also assume pagedown or other rmarkdown theme libraries are installed
+# Ex) installing ggtext; provide the repo to avoid interruption
+install.packages("ggtext", repos = "https://packagemanager.posit.co/cran/latest")
+library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+
+## Read from the same directory
+
+_Below code reads the `ont-sa-characteristic-ow-ont.csv` file uploaded in the
+same directory as the R Markdown file. You must also submit the data file with
+the submission._
+
+```{r data_local}
+df <- read_csv("ont-sa-characteristic-ow-ont.csv")
+df |>
+  mutate(yearmonth = as.Date(paste0(year, "-", month, "-01"))) |>
+  ggplot(aes(x = yearmonth, y = cases)) +
+  geom_point() +
+  theme_minimal() +
+  scale_y_continuous(limits = c(150000, 300000))
+```
+
+
+## Read from online (e.g., GitHub)
+
+_Below code reads the `ont-school-demo-info.csv` file from my GitHub repo. You
+must ensure the URL is public._
+
+
+```{r data_github, out.width="100%", fig.asp=1}
+df <- read_csv("https://raw.githubusercontent.com/mjmoon/sta313-project-datasets/refs/heads/main/ONT-SCHOOL/ont-school-demo-info.csv")
+df |>
+  ggplot(aes(x = longitude, y = latitude)) +
+  geom_point() +
+  facet_wrap(vars(year)) +
+  theme_void()
+```
