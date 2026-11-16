@@ -180,3 +180,16 @@ The class before them followed the same pattern with smaller gains. From Grade 3
 
 Some of this difference may come from affluent schools having less room to improve, since they were already near 88%. Even so, children in high-poverty schools start Grade 3 well behind. Schools in poorer areas also tend to have more students whose first language is not English. Is language the reason they start behind?
 
+
+## Methodology and limitations
+
+We used the Ontario Ministry of Education's school information file and kept regular English-language public and Catholic elementary schools: 3,525 schools observed over six school years. Every number in this article is a school's share of students, averaged across schools. A school of 100 students counts the same as a school of 700, and the data say nothing about individual children.
+
+Results are suppressed when fewer than 10 students wrote a test, so small schools often drop out; Grade 3 reading is reported for 18,471 of the 20,836 school-years we kept. No provincial tests were written in 2019-20 or 2020-21, yet the file has values for both years, and 99.9% of the Grade 3 reading values are exact copies of 2018-19, so we dropped those years. The 2023-24 values are stored as proportions (0.73) instead of percentages (73), so we multiplied them by 100.
+
+The low-income measure comes from the census and switches to a newer census in 2022-23, when the median school drops from about 15% to 10%. To compare schools fairly over time, we placed each school in an income fifth using its 2017-18 value and kept it there.
+
+The Grade 3 to Grade 6 comparison needs extra care. Students move between schools, so the same school does not always mean the same children, and affluent schools were already close to 90% in Grade 6, which limits how much they could gain. Across all our comparisons, the test moved online after the pandemic, so results before and after may not be fully comparable.
+
+Student-level EQAO records would show whether the same children really catch up. Weighting results by enrolment would stop small schools from counting as much as large ones, and models that account for school boards could separate neighbourhood income from board-level differences.
+
