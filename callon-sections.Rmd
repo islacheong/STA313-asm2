@@ -133,3 +133,50 @@ cohort_sum <- cohort |>
 cohort_sum |> mutate(across(c(g3, g6, gain), ~ round(.x, 1)))
 ```
 
+
+```{r fig3, fig.width = 7, fig.height = 4.6}
+# Spread the labels apart so they do not overlap
+spread_labels <- function(y, min_gap = 1.9) {
+  o <- order(y)
+  ys <- y[o]
+  for (i in seq_along(ys)[-1]) {
+    if (ys[i] - ys[i - 1] < min_gap) ys[i] <- ys[i - 1] + min_gap
+  }
+  out <- y
+  out[o] <- ys
+  out
+}
+
+cohort_long <- cohort_sum |>
+  pivot_longer(c(g3, g6), names_to = "stage", values_to = "pct") |>
+  mutate(stage = factor(stage, levels = c("g3", "g6"),
+                        labels = c("Grade 3\n(2021-22)", "Grade 6\n(2024-25)")))
+left_lab <- cohort_sum |>
+  mutate(y = spread_labels(g3), label = paste0(round(g3), "%"))
+right_lab <- cohort_sum |>
+  mutate(y = spread_labels(g6),
+         label = paste0(round(g6), "%  ", income_group, " (+", round(gain), ")"))
+
+ggplot(cohort_long, aes(x = stage, y = pct, group = income_group, colour = income_group)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2.8) +
+  geom_text(data = left_lab, aes(x = 1, y = y, label = label), hjust = 1, nudge_x = -0.06,
+            size = 3.3, inherit.aes = FALSE, colour = income_cols) +
+  geom_text(data = right_lab, aes(x = 2, y = y, label = label), hjust = 0, nudge_x = 0.06,
+            size = 3.3, inherit.aes = FALSE, colour = income_cols) +
+  scale_colour_manual(values = income_cols, guide = "none") +
+  scale_x_discrete(expand = expansion(add = c(0.45, 1.75))) +
+  scale_y_continuous(labels = scales::label_percent(scale = 1)) +
+  labs(title = "Figure 3. Students in high-poverty schools gain the most",
+       subtitle = "Same schools, mostly the same students: Grade 3 reading and three years\nlater in Grade 6 (points gained in brackets)",
+       x = NULL, y = NULL, caption = source_note) +
+  theme_story +
+  theme(panel.grid.major.x = element_blank())
+```
+
+When we follow the same schools for three years, students in poorer schools catch up part of the way. In 2021-22, 61.8% of Grade 3 students in the highest-poverty fifth of schools met the reading standard. In 2024-25, when most of those students wrote the Grade 6 test, 78.7% did, a gain of 16.8 percentage points. The most affluent fifth gained 10.7 points over the same years, from 77.9% to 88.6% (Figure 3). Every income group improved, and the gains grew as school poverty rose, so the gap between the richest and poorest fifth shrank from about 16 points in Grade 3 to about 10 in Grade 6.
+
+The class before them followed the same pattern with smaller gains. From Grade 3 in 2018-19 to Grade 6 in 2021-22, the highest-poverty fifth gained 12.2 points and the most affluent fifth 8.4.
+
+Some of this difference may come from affluent schools having less room to improve, since they were already near 88%. Even so, children in high-poverty schools start Grade 3 well behind. Schools in poorer areas also tend to have more students whose first language is not English. Is language the reason they start behind?
+
