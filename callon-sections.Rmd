@@ -11,7 +11,7 @@ source("A2-style.R")
 ```
 
 ## Introduction
-Reading is a skill every other subject depends on. It is the fundamental tool that is required for all future academic learning, work and daily life. Students who read well by Grade 3 are better placed to handle math word problems, science, and history. Those who fall behind in literacy tests early on, may experience long-term life outcomes if the issue is not addressed.
+Reading is a skill every other subject depends on. It is the fundamental tool that is required for all future academic learning, work and daily life. Students who read well by Grade 3 are better placed to handle math word problems, science, and history. Those who fall behind in reading tests early on, may experience long-term life outcomes if the issue is not addressed.
 
 Since 2017, students in Ontario have lived through school closures, two years of cancelled testing, and debate over how reading should be taught. Provincially, 75% of Grade 3 students met the reading standard in 2018. By 2025, it was 74%.
 
@@ -208,7 +208,7 @@ ggplot(lang_year2, aes(start_year, avg_read, colour = lang_group,
   labs(title = "Fig.4 Reading results don't fall steadily as the share of multilingual students rises",
        x = NULL,
        y = "Average reading (% meeting standard)",
-       colour = "Students whose first language isn't English",
+       colour = "Share of students whose first language isn't English",
        caption = source_note)
 ```
 
