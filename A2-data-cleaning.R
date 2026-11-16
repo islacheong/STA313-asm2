@@ -1,7 +1,7 @@
-# STA313 A2 - data cleaning (what Callon's Sections 1-3 need)
+# STA313 A2 - data cleaning
 library(tidyverse)
 
-# 1. Read the data (over 10 MB, so it must be read from the course GitHub URL)
+# 1. Read the data
 data_url <- "https://raw.githubusercontent.com/mjmoon/sta313-project-datasets/main/ONT-SCHOOL/ont-school-demo-info.csv"
 raw <- read_csv(data_url, show_col_types = FALSE, guess_max = 50000)
 
@@ -40,5 +40,4 @@ income_groups <- elem |>
 
 elem <- elem |> inner_join(income_groups, by = "school_number")
 
-# Check: should be 20,836 rows and 3,525 schools
 c(rows = nrow(elem), schools = n_distinct(elem$school_number))
