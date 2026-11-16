@@ -188,14 +188,18 @@ n_check |> filter(lang_group == "10% or fewer")   # look at 2023 vs 2024
 ```{r fig4, fig.height=5, fig.width=8}
 ggplot(lang_year2, aes(start_year, avg_read, colour = lang_group,
                        group = interaction(lang_group, period))) +
-  annotate("rect", xmin = 2019.3, xmax = 2020.7, ymin = -Inf, ymax = Inf,
-           fill = "grey80", alpha = 0.4) +
+  annotate("rect", xmin = 2018.5, xmax = 2020.5, ymin = -Inf, ymax = Inf,
+           fill = "grey85", alpha = 0.6) +
+  annotate("text", x = 2019.5, y = 67.5,
+           label = "No EQAO testing\nduring 19-20, \n20-21",
+           size = 2.8, color = "grey30", lineheight = 0.95) +
   geom_line(linewidth = 1) +
   geom_point(size = 2) +
   facet_wrap(~ grade, ncol = 2) +
   scale_colour_manual(values = lang_cols) +
   # Show only years with data, and shorter labels so they don't collide
   scale_x_continuous(breaks = c(2017, 2018, 2021, 2022, 2023, 2024),
+                     minor_breaks = NULL,
                      labels = function(x) paste0(substr(x, 3, 4), "-", substr(x + 1, 3, 4))) +
   scale_y_continuous(limits = c(65, 90), breaks = seq(65, 90, 5)) +
   theme_minimal(base_size = 12) +
