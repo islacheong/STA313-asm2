@@ -25,3 +25,27 @@ trend <- elem |>
 
 trend |> filter(!is.na(pct)) |> pivot_wider(names_from = grade, values_from = pct)
 ```
+
+```{r fig1, fig.width = 7, fig.height = 3.8}
+ggplot(trend, aes(x = start_year, y = pct, colour = grade)) +
+  # grey band for the two years without tests
+  annotate("rect", xmin = 2018.55, xmax = 2020.45, ymin = -Inf, ymax = Inf,
+           fill = "grey93") +
+  annotate("text", x = 2019.5, y = 64, label = "No provincial\ntests\n(COVID-19)",
+           size = 3.2, colour = "grey40", lineheight = 0.9) +
+  geom_line(linewidth = 1.1, na.rm = TRUE) +
+  geom_point(size = 2.2, na.rm = TRUE) +
+  # label each line at its right end instead of using a legend
+  geom_text(data = filter(trend, start_year == 2024),
+            aes(label = paste0(grade, ": ", round(pct), "%")),
+            hjust = 0, nudge_x = 0.15, size = 3.5, fontface = "bold") +
+  scale_colour_manual(values = c("Grade 3" = "#333333", "Grade 6" = "#8C8C8C"),
+                      guide = "none") +
+  scale_x_continuous(breaks = 2017:2024, labels = year_label(2017:2024),
+                     limits = c(2016.8, 2025.6)) +
+  scale_y_continuous(limits = c(60, 92), labels = scales::label_percent(scale = 1)) +
+  labs(title = "Figure 1. The provincial average barely moves",
+       subtitle = "Average share of students meeting the provincial reading standard",
+       x = NULL, y = NULL, caption = source_note) +
+  theme_story
+```
