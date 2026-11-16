@@ -49,3 +49,7 @@ ggplot(trend, aes(x = start_year, y = pct, colour = grade)) +
        x = NULL, y = NULL, caption = source_note) +
   theme_story
 ```
+
+Ontario's reading results have barely changed. In 2017-18, about 74% of Grade 3 students in the average school met the provincial reading standard, and in 2024-25 the figure was still about 74%, 0.1 percentage points lower. Grade 3 dipped after testing resumed in 2021-22 and reached about 71% in 2023-24, roughly 3 points below where it started, before recovering. Grade 6 results are higher and rose from 81% to 85% (Figure 1).
+
+A parent looking at this chart might conclude that nothing has changed. An average can stay flat, though, while some schools improve and others fall behind. To check whether every school stayed the same, we split schools by how many of their students come from low-income households.
