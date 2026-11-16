@@ -73,3 +73,42 @@ gap_wide <- gap_df |>
 
 gap_wide |> mutate(across(where(is.numeric) & !start_year, ~ round(.x, 1)))
 ```
+
+```{r fig2, fig.width = 7, fig.height = 4.4}
+# Order years so the latest is at the top
+gap_plot <- gap_df |>
+  mutate(year_lab = factor(year_label(start_year),
+                           levels = rev(year_label(sort(unique(start_year))))))
+gap_seg <- gap_wide |>
+  mutate(year_lab = factor(year_label(start_year), levels = levels(gap_plot$year_lab)))
+
+ggplot() +
+  # grey bar = the gap between the two groups
+  geom_segment(data = gap_seg,
+               aes(y = year_lab, yend = year_lab,
+                   x = `Highest-poverty fifth`, xend = `Most affluent fifth`),
+               colour = "grey80", linewidth = 2.2) +
+  geom_point(data = gap_plot, aes(x = pct, y = year_lab, colour = income_group),
+             size = 3.2) +
+  # gap size written to the right of each row
+  geom_text(data = gap_seg,
+            aes(x = `Most affluent fifth` + 1.2, y = year_lab,
+                label = paste0(round(gap), " pts")),
+            hjust = 0, size = 3.2, colour = "grey25") +
+  facet_wrap(~ grade) +
+  scale_colour_manual(values = income_cols[c("Most affluent fifth", "Highest-poverty fifth")],
+                      name = NULL) +
+  scale_x_continuous(limits = c(58, 97), labels = scales::label_percent(scale = 1)) +
+  labs(title = "Figure 2. The Grade 3 gap is stuck; the Grade 6 gap is narrowing",
+       subtitle = "Share of students meeting the reading standard:\nmost affluent vs highest-poverty fifth of schools",
+       x = NULL, y = NULL, caption = source_note) +
+  theme_story +
+  theme(panel.grid.major.y = element_blank(),
+        strip.text = element_text(face = "bold", size = 11))
+```
+
+Once schools are split by income, the flat average hides a steady gap. In 2017-18, 80.5% of Grade 3 students in the most affluent fifth of schools met the reading standard, compared with 64.7% in the highest-poverty fifth, a gap of 15.8 percentage points. In 2024-25 the gap was 15.9 points, and in the years between it stayed between about 14.5 and 16 points (Figure 2). In a class of 30, that is roughly five more children in a high-poverty school who are not reading at the provincial standard.
+
+Grade 6 has changed more. Before the pandemic the gap was about 15 points, the same as in Grade 3. When testing resumed in 2021-22 it had fallen to 11.5 points, and it stayed between about 10 and 13 points through 2024-25, ending at 10.1, about a third smaller than where it started.
+
+The Grade 3 students of 2021-22 were the Grade 6 students of 2024-25. If the gap is fixed in Grade 3 but smaller in Grade 6, do the same children catch up as they get older?
