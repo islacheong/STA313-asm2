@@ -13,7 +13,6 @@ source("A2-style.R")
 ## Section 1: Has provincial reading changed since 2017?
 
 ```{r s1-data}
-# average % meeting the reading standard for each year (average of schools)
 avg_year <- elem |>
   group_by(year) |>
   summarise(`Grade 3` = mean(g3_read, na.rm = TRUE),
@@ -29,11 +28,11 @@ ggplot(avg_year, aes(x = year_short, y = pct, colour = grade,
                      group = paste(grade, period))) +
   geom_line(linewidth = 1.1) +
   geom_point(size = 2.2) +
-  # dashed line where the 2 years without tests would be
+
   geom_vline(xintercept = 2.5, linetype = "dashed", colour = "grey60") +
   annotate("text", x = 2.5, y = 64, label = "no tests in\n2019-20 and 2020-21",
            size = 3, colour = "grey40") +
-  # put the grade name at the end of each line instead of a legend
+
   geom_text(data = filter(avg_year, year == "2024-2025"),
             aes(label = paste0(grade, ": ", round(pct), "%")),
             hjust = 0, nudge_x = 0.1, size = 3.5, fontface = "bold") +
@@ -54,7 +53,6 @@ We expected a bigger change, especially after COVID. If you only looked at this 
 ## Section 2: How big is the gap between the richest and poorest schools, and is it closing?
 
 ```{r s2-data}
-# only keep the richest and poorest fifth, average per year and grade
 gap_df <- elem |>
   filter(income_group %in% c("Most affluent fifth", "Highest-poverty fifth")) |>
   group_by(year, income_group) |>
@@ -63,7 +61,6 @@ gap_df <- elem |>
   pivot_longer(c(`Grade 3`, `Grade 6`), names_to = "grade", values_to = "pct") |>
   mutate(year_short = year_label(as.integer(substr(year, 1, 4))))
 
-# one row per year + grade so we can get the gap
 gap_tbl <- gap_df |>
   pivot_wider(names_from = income_group, values_from = pct) |>
   mutate(gap = `Most affluent fifth` - `Highest-poverty fifth`)
@@ -71,7 +68,6 @@ gap_tbl <- gap_df |>
 
 ```{r fig2, fig.height = 4.4}
 ggplot() +
-  # grey bar between the two dots = the gap
   geom_segment(data = gap_tbl,
                aes(y = year_short, yend = year_short,
                    x = `Highest-poverty fifth`, xend = `Most affluent fifth`),
@@ -86,7 +82,7 @@ ggplot() +
   scale_colour_manual(values = income_cols[c("Most affluent fifth", "Highest-poverty fifth")],
                       name = NULL) +
   scale_x_continuous(limits = c(58, 97), labels = scales::label_percent(scale = 1)) +
-  # newest year on top
+
   scale_y_discrete(limits = rev) +
   labs(title = "Figure 2. The Grade 3 gap is stuck; the Grade 6 gap is narrowing",
        subtitle = "Share of students meeting the reading standard:\nmost affluent vs highest-poverty fifth of schools",
@@ -103,7 +99,6 @@ Grade 6 looked different, which we didn't expect. Before the pandemic the gap wa
 ## Section 3: Do students in poorer schools catch up from Grade 3 to Grade 6?
 
 ```{r s3-data}
-# same school: grade 3 in 2021-22 vs grade 6 in 2024-25 (mostly the same kids)
 g3_2021 <- elem |>
   filter(year == "2021-2022") |>
   select(school_number, income_group, g3 = g3_read)
@@ -121,12 +116,10 @@ follow_avg <- follow |>
 ```
 
 ```{r fig3, fig.height = 4.6}
-# long format for the slope chart
 follow_long <- follow_avg |>
   pivot_longer(c(g3, g6), names_to = "when", values_to = "pct") |>
   mutate(when = if_else(when == "g3", "Grade 3\n(2021-22)", "Grade 6\n(2024-25)"))
 
-# labels: some lines end very close together so we moved them up/down by hand
 labs_g3 <- follow_avg |>
   mutate(when = "Grade 3\n(2021-22)", y = g3 + c(0.6, -0.6, 0, 0, 0),
          txt = paste0(round(g3), "%"))
