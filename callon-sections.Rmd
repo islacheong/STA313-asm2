@@ -157,36 +157,77 @@ One thing to keep in mind is that affluent schools were already near 90% in Grad
 
 ## Section 4: Is the gap really about English learners?
 
-
-```{r s4-data}
-lang_year <- elem |>
-  drop_na(g3_read, first_lang_not_eng) |>
+```{r}
+lang_year2 <- elem |>
+  drop_na(first_lang_not_eng) |>
   mutate(lang_group = cut(first_lang_not_eng,
                           breaks = c(-Inf, 10, 30, Inf),
                           labels = c("10% or fewer", "10% to 30%", "More than 30%"))) |>
   group_by(start_year, lang_group) |>
-  summarise(avg_g3_read = mean(g3_read),
-            n_schools   = n(), .groups = "drop") |>
+  summarise(`Grade 3` = mean(g3_read, na.rm = TRUE),
+            `Grade 6` = mean(g6_read, na.rm = TRUE),
+            n_schools = n(), .groups = "drop") |>
+  pivot_longer(c(`Grade 3`, `Grade 6`), names_to = "grade", values_to = "avg_read") |>
   mutate(period = if_else(start_year <= 2018, "before", "after"))
 ```
 
-```{r fig4, fig.height=4.5}
-ggplot(lang_year, aes(start_year, avg_g3_read, colour = lang_group,
-                      group = interaction(lang_group, period))) +
+```{r}
+ggplot(lang_year2, aes(start_year, avg_read, colour = lang_group,
+                       group = interaction(lang_group, period))) +
   annotate("rect", xmin = 2018.6, xmax = 2020.4, ymin = -Inf, ymax = Inf,
            fill = "grey80", alpha = 0.4) +
-  annotate("text", x = 2019.5, y = Inf, label = "No EQAO\ntesting",
-           vjust = 1.3, size = 3, colour = "grey30") +
   geom_line(linewidth = 1) +
   geom_point(size = 2) +
+  facet_wrap(~ grade) +
   scale_colour_manual(values = lang_cols) +
-  scale_x_continuous(breaks = 2017:2024,
+  scale_x_continuous(breaks = c(2017, 2018, 2021, 2022, 2023, 2024),
                      labels = function(x) paste0(x, "-", substr(x + 1, 3, 4))) +
   theme_minimal() +
-  labs(x = NULL,
-       y = "Average Grade 3 reading (% meeting standard)",
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = NULL, y = "Average reading (% meeting standard)",
        colour = "Students whose first\nlanguage isn't English",
        caption = "Unweighted school averages. No EQAO testing in 2019-20 and 2020-21.")
+```
+
+```{r}
+n_check <- elem |>
+  drop_na(first_lang_not_eng) |>
+  mutate(lang_group = cut(first_lang_not_eng,
+                          breaks = c(-Inf, 10, 30, Inf),
+                          labels = c("10% or fewer", "10% to 30%", "More than 30%"))) |>
+  group_by(start_year, lang_group) |>
+  summarise(n_g3 = sum(!is.na(g3_read)),
+            n_g6 = sum(!is.na(g6_read)), .groups = "drop")
+
+n_check |> filter(lang_group == "10% or fewer")   # look at 2023 vs 2024
+n_check |> print(n = Inf)
+```
+
+```{r fig4, fig.height=5, fig.width=8}
+ggplot(lang_year2, aes(start_year, avg_read, colour = lang_group,
+                       group = interaction(lang_group, period))) +
+  annotate("rect", xmin = 2019.3, xmax = 2020.7, ymin = -Inf, ymax = Inf,
+           fill = "grey80", alpha = 0.4) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  facet_wrap(~ grade, ncol = 2) +
+  scale_colour_manual(values = lang_cols) +
+  # Show only years with data, and shorter labels so they don't collide
+  scale_x_continuous(breaks = c(2017, 2018, 2021, 2022, 2023, 2024),
+                     labels = function(x) paste0(substr(x, 3, 4), "-", substr(x + 1, 3, 4))) +
+  scale_y_continuous(limits = c(65, 90), breaks = seq(65, 90, 5)) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom",             # frees up panel width
+        axis.text.x = element_text(size = 9),   
+        panel.spacing = unit(1.2, "lines"),
+        plot.title = element_text(face = "bold"),
+        plot.title.position = "plot",
+        plot.caption = element_text(size = 8, colour = "grey40", hjust = 0)) +
+  labs(title = "Fig.4 Reading results don't fall steadily as the share of multilingual students rises",
+       x = NULL,
+       y = "Average reading (% meeting standard)",
+       colour = "Students whose first language isn't English",
+       caption = source_note)
 ```
 
 ## Conclusion
