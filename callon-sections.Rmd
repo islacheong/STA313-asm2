@@ -171,7 +171,7 @@ lang_year2 <- elem |>
   mutate(period = if_else(start_year <= 2018, "before", "after"))
 ```
 
-```{r}
+```{r, echo=FALSE, include=FALSE}
 n_check <- elem |>
   drop_na(first_lang_not_eng) |>
   mutate(lang_group = cut(first_lang_not_eng,
