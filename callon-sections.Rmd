@@ -10,6 +10,14 @@ source("A2-data-cleaning.R")
 source("A2-style.R")
 ```
 
+## Introduction
+Reading is a skill every other subject depends on. It is the fundamental tool that is required for all future academic learning, work and daily life. Students who read well by Grade 3 are better placed to handle math word problems, science, and history. Those who fall behind in literacy tests early on, may experience long-term life outcomes if the issue is not addressed.
+
+Since 2017, students in Ontario have lived through school closures, two years of cancelled testing, and debate over how reading should be taught. Provincially, 75% of Grade 3 students met the reading standard in 2018. By 2025, it was 74%.
+
+But averages hide where the real differences are. Using school-level results across Ontario, we ask: how wide is the gap between schools with the most and fewest low-income families, and is it closing? Do students in higher poverty schools catch up by Grade 6? Is the gap really about English learners?
+
+
 ## Section 1: Has provincial reading changed since 2017?
 
 ```{r s1-data}
@@ -143,10 +151,46 @@ ggplot(follow_long, aes(x = when, y = pct, group = income_group, colour = income
   theme_story +
   theme(panel.grid.major.x = element_blank())
 ```
-
 To do this, we compared each school's Grade 3 result in 2021-22 with its Grade 6 result three years later, when most of the same kids would be in Grade 6. Every group improved, but the high-poverty schools improved the most: about 17 points, compared with about 11 for the most affluent schools (Figure 3). By Grade 6 the gap between them went from about 16 points to about 10. We checked the class before (Grade 3 in 2018-19 to Grade 6 in 2021-22) and saw the same thing, just smaller (about 12 points vs 8).
 
 One thing to keep in mind is that affluent schools were already near 90% in Grade 6, so they didn't have much room to grow. Even so, high-poverty schools start Grade 3 so far behind that the gap never fully closes. Poorer areas also tend to have more students whose first language isn't English, so our next question was whether language explains the gap.
+
+## Section 4: Is the gap really about English learners?
+
+
+```{r s4-data}
+lang_year <- elem |>
+  drop_na(g3_read, first_lang_not_eng) |>
+  mutate(lang_group = cut(first_lang_not_eng,
+                          breaks = c(-Inf, 10, 30, Inf),
+                          labels = c("10% or fewer", "10% to 30%", "More than 30%"))) |>
+  group_by(start_year, lang_group) |>
+  summarise(avg_g3_read = mean(g3_read),
+            n_schools   = n(), .groups = "drop") |>
+  mutate(period = if_else(start_year <= 2018, "before", "after"))
+```
+
+```{r fig4, fig.height=4.5}
+ggplot(lang_year, aes(start_year, avg_g3_read, colour = lang_group,
+                      group = interaction(lang_group, period))) +
+  annotate("rect", xmin = 2018.6, xmax = 2020.4, ymin = -Inf, ymax = Inf,
+           fill = "grey80", alpha = 0.4) +
+  annotate("text", x = 2019.5, y = Inf, label = "No EQAO\ntesting",
+           vjust = 1.3, size = 3, colour = "grey30") +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  scale_colour_manual(values = lang_cols) +
+  scale_x_continuous(breaks = 2017:2024,
+                     labels = function(x) paste0(x, "-", substr(x + 1, 3, 4))) +
+  theme_minimal() +
+  labs(x = NULL,
+       y = "Average Grade 3 reading (% meeting standard)",
+       colour = "Students whose first\nlanguage isn't English",
+       caption = "Unweighted school averages. No EQAO testing in 2019-20 and 2020-21.")
+```
+
+## Conclusion
+
 
 ## Limitations
 
