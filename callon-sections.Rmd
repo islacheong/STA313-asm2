@@ -215,6 +215,11 @@ ggplot(lang_year2, aes(start_year, avg_read, colour = lang_group,
        colour = "Share of students whose first language isn't English",
        caption = source_note)
 ```
+We asked whether reading results differ between schools with more and fewer students whose first language isn’t English. We compared schools by this share in Grade 3 and Grade 6. Contrary to what we expected, schools where 10% or fewer of students have a first language other than English tended to have slightly lower reading results than schools where more than 30% do, in both grades, before testing was paused in 2019-20 and 2020-21. The gaps were small, about one percentage point or less in most years.
+
+The pattern is clearer for the middle group. Schools with 10% to 30% of such students had the highest average results in nearly every year, in both grades. After testing resumed, the lowest-share group stayed near the bottom in Grade 3 until 2024-25, when its average rose to roughly match the middle group. Grade 6 did not show this catch-up.
+
+Overall, reading results do not fall steadily as the share of students whose first language isn’t English rises. These are school averages, so they say nothing about how individual students are doing, and other factors such as school income levels may play a role.
 
 ## Conclusion
 
