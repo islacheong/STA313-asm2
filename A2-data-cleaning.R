@@ -17,7 +17,7 @@ schools <- raw |>
 
 # 3. 2023-24 is stored as proportions (0.73); every other year is percent (73)
 schools <- schools |>
-  mutate(across(c(g3_read, g6_read, low_income),
+  mutate(across(c(g3_read, g6_read, low_income, first_lang_not_eng),
                 ~ if_else(year == "2023-2024", .x * 100, .x)),
          start_year = as.integer(substr(year, 1, 4)))
 
