@@ -11,7 +11,9 @@ schools <- raw |>
          school_special_condition_code,
          g3_read    = percentage_of_grade_3_students_achieving_the_provincial_standard_in_reading,
          g6_read    = percentage_of_grade_6_students_achieving_the_provincial_standard_in_reading,
-         low_income = percentage_of_school_aged_children_who_live_in_low_income_households)
+         low_income = percentage_of_school_aged_children_who_live_in_low_income_households,
+         first_lang_not_eng = percentage_of_students_whose_first_language_is_not_english)
+
 
 # 3. 2023-24 is stored as proportions (0.73); every other year is percent (73)
 schools <- schools |>
