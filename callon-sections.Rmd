@@ -1,5 +1,5 @@
 ---
-title: "Callon sections (working file, not for submission)"
+title: "A2"
 output: html_document
 ---
 
@@ -112,3 +112,24 @@ Once schools are split by income, the flat average hides a steady gap. In 2017-1
 Grade 6 has changed more. Before the pandemic the gap was about 15 points, the same as in Grade 3. When testing resumed in 2021-22 it had fallen to 11.5 points, and it stayed between about 10 and 13 points through 2024-25, ending at 10.1, about a third smaller than where it started.
 
 The Grade 3 students of 2021-22 were the Grade 6 students of 2024-25. If the gap is fixed in Grade 3 but smaller in Grade 6, do the same children catch up as they get older?
+
+## Section 3: Do students in poorer schools catch up from Grade 3 to Grade 6?
+
+```{r s3-data}
+# Follow the same schools: Grade 3 in 2021-22 -> Grade 6 three years later (2024-25).
+# Mostly the same class of students. Keep schools with both results.
+cohort <- elem |>
+  filter(year %in% c("2021-2022", "2024-2025")) |>
+  select(school_number, income_group, year, g3_read, g6_read) |>
+  pivot_wider(names_from = year, values_from = c(g3_read, g6_read)) |>
+  transmute(income_group, g3 = `g3_read_2021-2022`, g6 = `g6_read_2024-2025`) |>
+  drop_na()
+
+cohort_sum <- cohort |>
+  group_by(income_group) |>
+  summarise(schools = n(), g3 = mean(g3), g6 = mean(g6), .groups = "drop") |>
+  mutate(gain = g6 - g3)
+
+cohort_sum |> mutate(across(c(g3, g6, gain), ~ round(.x, 1)))
+```
+
