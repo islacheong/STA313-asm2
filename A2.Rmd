@@ -1,0 +1,262 @@
+---
+title: "The Reading Gap? How schools in Ontario Compare"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+# install packages if they are missing
+pkgs <- c("tidyverse", "scales")
+new_pkgs <- pkgs[!(pkgs %in% installed.packages()[, "Package"])]
+if (length(new_pkgs) > 0) install.packages(new_pkgs, repos = "https://cloud.r-project.org")
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
+                      fig.width = 7, fig.height = 4)
+source("A2-data-cleaning.R")
+```
+
+```{r style, include = FALSE}
+# Shared chart style for A2 (Callon + Isla use the same file)
+# Load it after the data cleaning code: source("A2-style.R")
+
+# Colours: income fifths (blue = affluent, rust = high-poverty)
+income_cols <- c("Most affluent fifth"   = "#2E6F9E",
+                 "Second fifth"          = "#7FA7C6",
+                 "Middle fifth"          = "#ADADAD",
+                 "Fourth fifth"          = "#D9886F",
+                 "Highest-poverty fifth" = "#B5432A")
+
+# Colours: share of students whose first language is not English (light to dark)
+lang_cols <- c("10% or fewer"  = "#CFC3E6",
+               "10% to 30%"    = "#9479C4",
+               "More than 30%" = "#4B2C8A")
+
+# Same caption under every chart
+source_note <- paste("Source: Ontario Ministry of Education school information",
+                     "(STA313 datasets). Averages of English-language public",
+                     "and Catholic elementary schools.")
+
+# 2017 -> "2017-18"
+year_label <- function(y) paste0(y, "-", substr(y + 1, 3, 4))
+
+# One theme for every chart
+theme_story <- theme_minimal(base_size = 11) +
+  theme(plot.title = element_text(face = "bold", size = 12.5),
+        plot.title.position = "plot",
+        plot.subtitle = element_text(colour = "grey30"),
+        plot.caption = element_text(colour = "grey45", size = 7.5, hjust = 0),
+        plot.caption.position = "plot",
+        panel.grid.minor = element_blank(),
+        legend.position = "top",
+        legend.justification = "left")
+```
+
+## Introduction
+Reading is a skill every other subject depends on. It is the fundamental tool that is required for all future academic learning, work and daily life. Students who read well by Grade 3 are better placed to handle math word problems, science, and history. Those who fall behind in reading tests early on, may experience long-term life outcomes if the issue is not addressed.
+
+Since 2017, students in Ontario have lived through school closures, two years of cancelled testing, and debate over how reading should be taught. Provincially, 75% of Grade 3 students met the reading standard in 2018. By 2025, it was 74%.
+
+But averages hide where the real differences are. Using school-level results across Ontario, we ask: how wide is the gap between schools with the most and fewest low-income families, and is it closing? Do students in higher poverty schools catch up by Grade 6? Is the gap really about English learners?
+
+
+## Has provincial reading changed since 2017?
+
+```{r s1-data}
+avg_year <- elem |>
+  group_by(year) |>
+  summarise(`Grade 3` = mean(g3_read, na.rm = TRUE),
+            `Grade 6` = mean(g6_read, na.rm = TRUE)) |>
+  pivot_longer(c(`Grade 3`, `Grade 6`), names_to = "grade", values_to = "pct") |>
+  # before / after covid so the line doesn't connect over the missing years
+  mutate(period = if_else(year < "2020", "before", "after"),
+         year_short = year_label(as.integer(substr(year, 1, 4))))
+```
+
+```{r fig1, fig.height = 3.8}
+ggplot(avg_year, aes(x = year_short, y = pct, colour = grade,
+                     group = paste(grade, period))) +
+  geom_line(linewidth = 1.1) +
+  geom_point(size = 2.2) +
+
+  geom_vline(xintercept = 2.5, linetype = "dashed", colour = "grey60") +
+  annotate("text", x = 2.5, y = 64, label = "no tests in\n2019-20 and 2020-21",
+           size = 3, colour = "grey40") +
+
+  geom_text(data = filter(avg_year, year == "2024-2025"),
+            aes(label = paste0(grade, ": ", round(pct), "%")),
+            hjust = 0, nudge_x = 0.1, size = 3.5, fontface = "bold") +
+  scale_colour_manual(values = c("Grade 3" = "#333333", "Grade 6" = "#8C8C8C"),
+                      guide = "none") +
+  scale_x_discrete(expand = expansion(add = c(0.4, 1.3))) +
+  scale_y_continuous(limits = c(60, 92), labels = scales::label_percent(scale = 1)) +
+  labs(title = "Figure 1. The provincial average barely moves",
+       subtitle = "Average share of students meeting the provincial reading standard",
+       x = NULL, y = NULL, caption = source_note) +
+  theme_story
+```
+
+We started with the number most people see: the provincial average. In the average school, about 74% of Grade 3 students met the reading standard in 2017-18, and in 2024-25 it was still about 74% (Figure 1). There was a dip after the pandemic, down to around 71% in 2023-24, but it came back. Grade 6 went up a little, from about 81% to 85%.
+
+We expected a bigger change, especially after COVID. If you only looked at this chart, you would think not much has happened to reading in Ontario. But this average is one number for more than 3,500 schools, so we wondered whether every school really stayed the same or whether some went up while others went down. To find out, we split schools into five groups based on how many children in the area live in low-income households.
+
+## How big is the gap between the richest and poorest schools, and is it closing?
+
+```{r s2-data}
+gap_df <- elem |>
+  filter(income_group %in% c("Most affluent fifth", "Highest-poverty fifth")) |>
+  group_by(year, income_group) |>
+  summarise(`Grade 3` = mean(g3_read, na.rm = TRUE),
+            `Grade 6` = mean(g6_read, na.rm = TRUE)) |>
+  pivot_longer(c(`Grade 3`, `Grade 6`), names_to = "grade", values_to = "pct") |>
+  mutate(year_short = year_label(as.integer(substr(year, 1, 4))))
+
+gap_tbl <- gap_df |>
+  pivot_wider(names_from = income_group, values_from = pct) |>
+  mutate(gap = `Most affluent fifth` - `Highest-poverty fifth`)
+```
+
+```{r fig2, fig.height = 4.4}
+ggplot() +
+  geom_segment(data = gap_tbl,
+               aes(y = year_short, yend = year_short,
+                   x = `Highest-poverty fifth`, xend = `Most affluent fifth`),
+               colour = "grey80", linewidth = 2.2) +
+  geom_point(data = gap_df, aes(x = pct, y = year_short, colour = income_group),
+             size = 3.2) +
+  geom_text(data = gap_tbl,
+            aes(x = `Most affluent fifth` + 1.2, y = year_short,
+                label = paste0(round(gap), " pts")),
+            hjust = 0, size = 3.2, colour = "grey25") +
+  facet_wrap(~ grade) +
+  scale_colour_manual(values = income_cols[c("Most affluent fifth", "Highest-poverty fifth")],
+                      name = NULL) +
+  scale_x_continuous(limits = c(58, 97), labels = scales::label_percent(scale = 1)) +
+
+  scale_y_discrete(limits = rev) +
+  labs(title = "Figure 2. The Grade 3 gap is stuck; the Grade 6 gap is narrowing",
+       subtitle = "Share of students meeting the reading standard:\nmost affluent vs highest-poverty fifth of schools",
+       x = NULL, y = NULL, caption = source_note) +
+  theme_story +
+  theme(panel.grid.major.y = element_blank(),
+        strip.text = element_text(face = "bold", size = 11))
+```
+
+Splitting schools by income showed us what the average was hiding. In Grade 3, students in the most affluent fifth of schools were about 16 percentage points more likely to meet the standard than students in the highest-poverty fifth, and that gap barely moved in seven years (Figure 2). In a class of 30, that's about five more kids in a high-poverty school who aren't meeting the provincial standard.
+
+Grade 6 looked different, which we didn't expect. Before the pandemic the gap was about the same as in Grade 3 (around 15 points), but once testing came back in 2021-22 it was closer to 11, and by 2024-25 it was about 10. So the gap stays the same in Grade 3 but gets smaller by Grade 6. Since the Grade 3 class of 2021-22 is the Grade 6 class of 2024-25, we decided to follow those students.
+
+## Do students in poorer schools catch up from Grade 3 to Grade 6?
+
+```{r s3-data}
+g3_2021 <- elem |>
+  filter(year == "2021-2022") |>
+  select(school_number, income_group, g3 = g3_read)
+g6_2024 <- elem |>
+  filter(year == "2024-2025") |>
+  select(school_number, g6 = g6_read)
+
+follow <- inner_join(g3_2021, g6_2024, by = "school_number") |>
+  filter(!is.na(g3), !is.na(g6))
+
+follow_avg <- follow |>
+  group_by(income_group) |>
+  summarise(n_schools = n(), g3 = mean(g3), g6 = mean(g6)) |>
+  mutate(gain = g6 - g3)
+```
+
+```{r fig3, fig.height = 4.6}
+follow_long <- follow_avg |>
+  pivot_longer(c(g3, g6), names_to = "when", values_to = "pct") |>
+  mutate(when = if_else(when == "g3", "Grade 3\n(2021-22)", "Grade 6\n(2024-25)"))
+
+labs_g3 <- follow_avg |>
+  mutate(when = "Grade 3\n(2021-22)", y = g3 + c(0.6, -0.6, 0, 0, 0),
+         txt = paste0(round(g3), "%"))
+labs_g6 <- follow_avg |>
+  mutate(when = "Grade 6\n(2024-25)", y = g6 + c(1.4, -0.2, 0.8, -0.4, 0),
+         txt = paste0(round(g6), "%  ", income_group, " (+", round(gain), ")"))
+
+ggplot(follow_long, aes(x = when, y = pct, group = income_group, colour = income_group)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2.8) +
+  geom_text(data = labs_g3, aes(y = y, label = txt), hjust = 1, nudge_x = -0.06,
+            size = 3.3) +
+  geom_text(data = labs_g6, aes(y = y, label = txt), hjust = 0, nudge_x = 0.06,
+            size = 3.3) +
+  scale_colour_manual(values = income_cols, guide = "none") +
+  scale_x_discrete(expand = expansion(add = c(0.45, 1.75))) +
+  scale_y_continuous(labels = scales::label_percent(scale = 1)) +
+  labs(title = "Figure 3. Students in high-poverty schools gain the most",
+       subtitle = "Same schools, mostly the same students: Grade 3 reading and three years\nlater in Grade 6 (points gained in brackets)",
+       x = NULL, y = NULL, caption = source_note) +
+  theme_story +
+  theme(panel.grid.major.x = element_blank())
+```
+To do this, we compared each school's Grade 3 result in 2021-22 with its Grade 6 result three years later, when most of the same kids would be in Grade 6. Every group improved, but the high-poverty schools improved the most: about 17 points, compared with about 11 for the most affluent schools (Figure 3). By Grade 6 the gap between them went from about 16 points to about 10. We checked the class before (Grade 3 in 2018-19 to Grade 6 in 2021-22) and saw the same thing, just smaller (about 12 points vs 8).
+
+One thing to keep in mind is that affluent schools were already near 90% in Grade 6, so they didn't have much room to grow. Even so, high-poverty schools start Grade 3 so far behind that the gap never fully closes. Poorer areas also tend to have more students whose first language isn't English, so our next question was whether language explains the gap.
+
+## Is the gap really about English learners?
+
+```{r s4-data}
+lang_year2 <- elem |>
+  drop_na(first_lang_not_eng) |>
+  mutate(lang_group = cut(first_lang_not_eng,
+                          breaks = c(-Inf, 10, 30, Inf),
+                          labels = c("10% or fewer", "10% to 30%", "More than 30%"))) |>
+  group_by(start_year, lang_group) |>
+  summarise(`Grade 3` = mean(g3_read, na.rm = TRUE),
+            `Grade 6` = mean(g6_read, na.rm = TRUE),
+            n_schools = n(), .groups = "drop") |>
+  pivot_longer(c(`Grade 3`, `Grade 6`), names_to = "grade", values_to = "avg_read") |>
+  mutate(period = if_else(start_year <= 2018, "before", "after"))
+```
+
+
+```{r fig4, fig.height=5, fig.width=8}
+ggplot(lang_year2, aes(start_year, avg_read, colour = lang_group,
+                       group = interaction(lang_group, period))) +
+  annotate("rect", xmin = 2018.5, xmax = 2020.5, ymin = -Inf, ymax = Inf,
+           fill = "grey85", alpha = 0.6) +
+  annotate("text", x = 2019.5, y = 67.5,
+           label = "No EQAO testing\nduring 19-20, \n20-21",
+           size = 2.8, color = "grey30", lineheight = 0.95) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  facet_wrap(~ grade, ncol = 2) +
+  scale_colour_manual(values = lang_cols) +
+  # Show only years with data, and shorter labels so they don't collide
+  scale_x_continuous(breaks = c(2017, 2018, 2021, 2022, 2023, 2024),
+                     minor_breaks = NULL,
+                     labels = function(x) paste0(substr(x, 3, 4), "-", substr(x + 1, 3, 4))) +
+  scale_y_continuous(limits = c(65, 90), breaks = seq(65, 90, 5)) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom",             # frees up panel width
+        axis.text.x = element_text(size = 9),   
+        panel.spacing = unit(1.2, "lines"),
+        plot.title = element_text(face = "bold"),
+        plot.title.position = "plot",
+        plot.caption = element_text(size = 8, colour = "grey40", hjust = 0)) +
+  labs(title = "Fig.4 Reading results don't fall steadily as the share of multilingual students rises",
+       x = NULL,
+       y = "Average reading (% meeting standard)",
+       colour = "Share of students whose first language isn't English",
+       caption = source_note)
+```
+We asked whether reading results differ between schools with more and fewer students whose first language isn’t English. We compared schools by this share in Grade 3 and Grade 6. Contrary to what we expected, schools where 10% or fewer of students have a first language other than English tended to have slightly lower reading results than schools where more than 30% do, in both grades, before testing was paused in 2019-20 and 2020-21. The gaps were small, about one percentage point or less in most years.
+
+The pattern is clearer for the middle group. Schools with 10% to 30% of such students had the highest average results in nearly every year, in both grades. After testing resumed, the lowest-share group stayed near the bottom in Grade 3 until 2024-25, when its average rose to roughly match the middle group. Grade 6 did not show this catch-up.
+
+Overall, reading results do not fall steadily as the share of students whose first language isn’t English rises. These are school averages, so they say nothing about how individual students are doing, and other factors such as school income levels may play a role.
+
+## Limitations
+
+All of our numbers are percentages for whole schools, not individual students, and we averaged schools without weighting them by size. A school of 100 students counts the same as one with 700, so we can't say anything about individual kids. We used 3,525 regular English-language public and Catholic elementary schools.
+
+We also ran into a few problems with the data. Schools with fewer than 10 test takers have no results, so some small schools are missing; Grade 3 reading is blank in about 1 in 9 school-years. The file has numbers for 2019-20 and 2020-21 even though there were no EQAO tests those years because of COVID. When we checked, 99.9% of the Grade 3 values were exactly the same as 2018-19, so we took those years out. The 2023-24 numbers were stored as decimals (like 0.73) instead of percents, so we multiplied them by 100. The low-income numbers also switch to newer census data in 2022-23 and drop noticeably, so we kept each school in the income group it was in for 2017-18.
+
+For the Grade 3 to Grade 6 comparison, students change schools, so it isn't exactly the same kids, and affluent schools had little room left to improve. The test also moved online after the pandemic, which could make results before and after a bit different. With student-level data, or results weighted by enrolment, we could check these findings more carefully.
+
+## Conclusion
+
+
