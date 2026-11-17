@@ -18,7 +18,7 @@ Since 2017, students in Ontario have lived through school closures, two years of
 But averages hide where the real differences are. Using school-level results across Ontario, we ask: how wide is the gap between schools with the most and fewest low-income families, and is it closing? Do students in higher poverty schools catch up by Grade 6? Is the gap really about English learners?
 
 
-## Section 1: Has provincial reading changed since 2017?
+## Has provincial reading changed since 2017?
 
 ```{r s1-data}
 avg_year <- elem |>
@@ -58,7 +58,7 @@ We started with the number most people see: the provincial average. In the avera
 
 We expected a bigger change, especially after COVID. If you only looked at this chart, you would think not much has happened to reading in Ontario. But this average is one number for more than 3,500 schools, so we wondered whether every school really stayed the same or whether some went up while others went down. To find out, we split schools into five groups based on how many children in the area live in low-income households.
 
-## Section 2: How big is the gap between the richest and poorest schools, and is it closing?
+## How big is the gap between the richest and poorest schools, and is it closing?
 
 ```{r s2-data}
 gap_df <- elem |>
@@ -104,7 +104,7 @@ Splitting schools by income showed us what the average was hiding. In Grade 3, s
 
 Grade 6 looked different, which we didn't expect. Before the pandemic the gap was about the same as in Grade 3 (around 15 points), but once testing came back in 2021-22 it was closer to 11, and by 2024-25 it was about 10. So the gap stays the same in Grade 3 but gets smaller by Grade 6. Since the Grade 3 class of 2021-22 is the Grade 6 class of 2024-25, we decided to follow those students.
 
-## Section 3: Do students in poorer schools catch up from Grade 3 to Grade 6?
+## Do students in poorer schools catch up from Grade 3 to Grade 6?
 
 ```{r s3-data}
 g3_2021 <- elem |>
@@ -155,7 +155,7 @@ To do this, we compared each school's Grade 3 result in 2021-22 with its Grade 6
 
 One thing to keep in mind is that affluent schools were already near 90% in Grade 6, so they didn't have much room to grow. Even so, high-poverty schools start Grade 3 so far behind that the gap never fully closes. Poorer areas also tend to have more students whose first language isn't English, so our next question was whether language explains the gap.
 
-## Section 4: Is the gap really about English learners?
+## Is the gap really about English learners?
 
 ```{r s4-data}
 lang_year2 <- elem |>
