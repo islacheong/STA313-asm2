@@ -16,9 +16,6 @@ source("A2-data-cleaning.R")
 ```
 
 ```{r style, include = FALSE}
-# Shared chart style for A2 (Callon + Isla use the same file)
-# Load it after the data cleaning code: source("A2-style.R")
-
 # Colours: income fifths (blue = affluent, rust = high-poverty)
 income_cols <- c("Most affluent fifth"   = "#2E6F9E",
                  "Second fifth"          = "#7FA7C6",
@@ -31,7 +28,6 @@ lang_cols <- c("10% or fewer"  = "#CFC3E6",
                "10% to 30%"    = "#9479C4",
                "More than 30%" = "#4B2C8A")
 
-# Same caption under every chart
 source_note <- paste("Source: Ontario Ministry of Education school information",
                      "(STA313 datasets). Averages of English-language public",
                      "and Catholic elementary schools.")
@@ -67,7 +63,7 @@ avg_year <- elem |>
   summarise(`Grade 3` = mean(g3_read, na.rm = TRUE),
             `Grade 6` = mean(g6_read, na.rm = TRUE)) |>
   pivot_longer(c(`Grade 3`, `Grade 6`), names_to = "grade", values_to = "pct") |>
-  # before / after covid so the line doesn't connect over the missing years
+
   mutate(period = if_else(year < "2020", "before", "after"),
          year_short = year_label(as.integer(substr(year, 1, 4))))
 ```
@@ -95,9 +91,9 @@ ggplot(avg_year, aes(x = year_short, y = pct, colour = grade,
   theme_story
 ```
 
-We started with the number most people see: the provincial average. In the average school, about 74% of Grade 3 students met the reading standard in 2017-18, and in 2024-25 it was still about 74% (Figure 1). There was a dip after the pandemic, down to around 71% in 2023-24, but it came back. Grade 6 went up a little, from about 81% to 85%.
+Overall, the provincial average shows that in the average school around 74% of Grade 3 students met the standard in both 2017-18 and 2024-25 (Figure 1). There was a dip after the pandemic, down to around 71% in 2023-24, but then it went back up. Grade 6 students had a slight increase (from around 81% to 85%).
 
-We expected a bigger change, especially after COVID. If you only looked at this chart, you would think not much has happened to reading in Ontario. But this average is one number for more than 3,500 schools, so we wondered whether every school really stayed the same or whether some went up while others went down. To find out, we split schools into five groups based on how many children in the area live in low-income households.
+We expected there to be a bigger change. From just looking at this graph, it looks like there has not been much change in reading across Ontario. However, this is an average across over 3,500 schools, so we wanted to know if all schools actually stayed the same or if some improved and some got worse. So we divided them into 5 groups (fifths) based on the percentage of children in the area who live in low-income households.
 
 ## How big is the gap between the richest and poorest schools, and is it closing?
 
@@ -141,9 +137,9 @@ ggplot() +
         strip.text = element_text(face = "bold", size = 11))
 ```
 
-Splitting schools by income showed us what the average was hiding. In Grade 3, students in the most affluent fifth of schools were about 16 percentage points more likely to meet the standard than students in the highest-poverty fifth, and that gap barely moved in seven years (Figure 2). In a class of 30, that's about five more kids in a high-poverty school who aren't meeting the provincial standard.
+By dividing the schools into income groups we could see that the average was hiding a big difference. In Grade 3, the share of students meeting the standard in the most affluent fifth was around 15 to 16 percentage points higher than in the highest-poverty fifth (Figure 2). This did not change much from 2017-18 to 2024-25. This is a big difference, as in a class of 30 it means around 5 more children in a high-poverty school not meeting the provincial standard.
 
-Grade 6 looked different, which we didn't expect. Before the pandemic the gap was about the same as in Grade 3 (around 15 points), but once testing came back in 2021-22 it was closer to 11, and by 2024-25 it was about 10. So the gap stays the same in Grade 3 but gets smaller by Grade 6. Since the Grade 3 class of 2021-22 is the Grade 6 class of 2024-25, we decided to follow those students.
+In Grade 6 we were surprised to see that the gap decreased. Before the pandemic the gap was around the same as Grade 3 (around 15 points). However, once testing resumed in 2021-22 the gap was around 11 points, and in 2024-25 it was around 10. So although the gap stayed the same in Grade 3, it was smaller in Grade 6. The Grade 3 class of 2021-22 is the Grade 6 class of 2024-25, so we decided to look at these students.
 
 ## Do students in poorer schools catch up from Grade 3 to Grade 6?
 
@@ -193,9 +189,9 @@ ggplot(follow_long, aes(x = when, y = pct, group = income_group, colour = income
   theme(panel.grid.major.x = element_blank())
 ```
 
-To do this, we compared each school's Grade 3 result in 2021-22 with its Grade 6 result three years later, when most of the same kids would be in Grade 6. Every group improved, but the high-poverty schools improved the most: about 17 points, compared with about 11 for the most affluent schools (Figure 3). By Grade 6 the gap between them went from about 16 points to about 10. We checked the class before (Grade 3 in 2018-19 to Grade 6 in 2021-22) and saw the same thing, just smaller (about 12 points vs 8).
+We compared the Grade 3 results in 2021-22 to the Grade 6 results 3 years later. All groups improved, however the high-poverty schools improved the most (around 16 points) compared to the most affluent schools (around 11 points) (Figure 3). This meant that by Grade 6 the gap between the two groups had decreased from around 15 points to around 10. We looked at the previous class (Grade 3 in 2018-19 to Grade 6 in 2021-22) and saw this trend again, however it was not as big (the gap went from about 14.5 points to 11.5).
 
-One thing to keep in mind is that affluent schools were already near 90% in Grade 6, so they didn't have much room to grow. Even so, high-poverty schools start Grade 3 so far behind that the gap never fully closes. Poorer areas also tend to have more students whose first language isn't English, so our next question was whether language explains the gap.
+Something to note is that the most affluent schools were already high, and by Grade 6 they were close to 90% (around 89%), so they did not have much room to improve. However, the high-poverty schools started so far behind that the gap did not fully close. The highest-poverty schools also have more students whose first language is not English. In 2017-18 it was about 36% of students on average, compared to 11% in the most affluent schools, so we wanted to see if this was the reason for the gap.
 
 ## Is the gap really about English learners?
 
@@ -219,7 +215,7 @@ ggplot(lang_year2, aes(x = year_label(start_year), y = avg_read, colour = lang_g
                        group = interaction(lang_group, period))) +
   geom_line(linewidth = 1.1) +
   geom_point(size = 2.2) +
-  # dashed line = the 2 years without tests (same as Figure 1)
+
   geom_vline(xintercept = 2.5, linetype = "dashed", colour = "grey60") +
   facet_wrap(~ grade) +
   scale_colour_manual(values = lang_cols,
@@ -241,19 +237,19 @@ A more noticeable trend emerges among schools in the middle category. Those wher
 
 ## Limitations
 
-All of our numbers are percentages for whole schools, not individual students, and we averaged schools without weighting them by size. A school of 100 students counts the same as one with 700, so we can't say anything about individual kids. We used 3,525 regular English-language public and Catholic elementary schools.
+All the data we have is in percentages for the whole school. We have not weighted the data, so a school with 100 students counts the same as a school with 700 students. This means we cannot say anything about individual students. We have data for 3,525 regular English-language public and Catholic elementary schools.
 
-We also ran into a few problems with the data. Schools with fewer than 10 test takers have no results, so some small schools are missing; Grade 3 reading is blank in about 1 in 9 school-years. The file has numbers for 2019-20 and 2020-21 even though there were no EQAO tests those years because of COVID. When we checked, 99.9% of the Grade 3 values were exactly the same as 2018-19, so we took those years out. The 2023-24 numbers were stored as decimals (like 0.73) instead of percents, so we multiplied them by 100. The low-income numbers also switch to newer census data in 2022-23 and drop noticeably, so we kept each school in the income group it was in for 2017-18.
+There were also a few issues with the data. Schools where fewer than 10 students took the test do not have any data, which means that some small schools are missing. In Grade 3 there is no data for around 1 in 9 school-years. There are numbers for 2019-20 and 2020-21, but there were no EQAO tests in those years due to the pandemic. We checked this and found that 99.9% of the Grade 3 values were exactly the same as 2018-19, so we removed these years. In 2023-24 the numbers were in decimal format (e.g. 0.73), so we multiplied them by 100. The low-income numbers also change to new census data in 2022-23, which causes a big drop (from about 19% to 9% on average). Because of this, we put each school into the income group it was in during 2017-18.
 
-For the Grade 3 to Grade 6 comparison, students change schools, so it isn't exactly the same kids, and affluent schools had little room left to improve. The test also moved online after the pandemic, which could make results before and after a bit different. With student-level data, or results weighted by enrolment, we could check these findings more carefully.
+When comparing Grade 3 and Grade 6, students move schools, so it is not exactly the same students. The most affluent schools also had little room to improve. The test was also online after the pandemic, so there may be some differences in the results. If we had student-level data or weighted the data by the number of students, we could be more precise with our findings.
 
 ## Conclusion
-Ontario’s average reading results have remained relatively stable, yet the overall trend hides a persistent achievement gap between schools in different income areas. About 75% of Grade 3 students in the average school continue to meet the reading standard after seven years. However, schools in the highest-poverty group score approximately 16 percentage points lower than those in the most affluent, with little improvement over time. 
+Ontario’s average reading results have remained relatively stable, yet the overall trend hides a persistent achievement gap between schools in different income areas. About 74% of Grade 3 students in the average school continue to meet the reading standard after seven years. However, schools in the highest-poverty group score approximately 16 percentage points lower than those in the most affluent, with little improvement over time. 
 
-Nonetheless, our findings suggest that this gap can be reduced. By Grade 6, the difference in proportion of students meeting the provincial reading standard between the most affluent and highest-poverty schools had narrowed by 10 percentage points. As we followed the same cohorts of schools from Grade 3 to Grade 6, we discovered that schools in the highest-poverty group make the largest gains. Despite the improvement, the gap between the two groups remained significant. This suggests providing additional reading support at a younger age could be especially crucial.
+Nonetheless, our findings suggest that this gap can be reduced. By Grade 6, the difference in proportion of students meeting the provincial reading standard between the most affluent and highest-poverty schools had narrowed to about 10 percentage points (from about 15). As we followed the same cohorts of schools from Grade 3 to Grade 6, we discovered that schools in the highest-poverty group make the largest gains. Despite the improvement, the gap between the two groups remained significant. This suggests providing additional reading support at a younger age could be especially crucial.
 
-In addition, language diversity does not appear to be a major factor to the disparity of reading achievements. Schools with a larger share of students whose first language do not necessarily perform worse in reading. In fact, schools where these students made up 10% to 30% of total enrollment tend to perform the best. This suggests that socioeconomic factors may be more closely related to differences in reading achievements than the language background of students. 
+In addition, language diversity does not appear to be a major factor to the disparity of reading achievements. Schools with a larger share of students whose first language is not English do not necessarily perform worse in reading. In fact, schools where these students made up 10% to 30% of total enrollment tend to perform the best. This suggests that socioeconomic factors may be more closely related to differences in reading achievements than the language background of students. 
 
-One key takeaway is that disparities in reading performance are already significant by Grade 3. While high-poverty schools show greater progress by Grade 6, they still struggle to catch up with the most affluent schools. This raises an important question for policymakers and educators: should interventions begin even sooner to help bridge the gap, if these inequalities emerge so early.
+One key takeaway is that disparities in reading performance are already significant by Grade 3. While high-poverty schools show greater progress by Grade 6, they still struggle to catch up with the most affluent schools. This raises an important question for policymakers and educators: should interventions begin even sooner to help bridge the gap, if these inequalities emerge so early?
 
 
