@@ -16,26 +16,22 @@ source("A2-data-cleaning.R")
 ```
 
 ```{r style, include = FALSE}
-# Colours: income fifths (blue = affluent, rust = high-poverty)
-income_cols <- c("Most affluent fifth"   = "#2E6F9E",
-                 "Second fifth"          = "#7FA7C6",
-                 "Middle fifth"          = "#ADADAD",
-                 "Fourth fifth"          = "#D9886F",
+income_cols <- c("Most affluent fifth" = "#2E6F9E",
+                 "Second fifth" = "#7FA7C6",
+                 "Middle fifth" = "#ADADAD",
+                 "Fourth fifth" = "#D9886F",
                  "Highest-poverty fifth" = "#B5432A")
 
-# Colours: share of students whose first language is not English (light to dark)
-lang_cols <- c("10% or fewer"  = "#B3A0D9",
-               "10% to 30%"    = "#7D5CBF",
+lang_cols <- c("10% or fewer" = "#B3A0D9",
+               "10% to 30%" = "#7D5CBF",
                "More than 30%" = "#4B2C8A")
 
 source_note <- paste("Source: Ontario Ministry of Education school information",
-                     "(STA313 datasets). Averages of English-language public",
+                     "Averages of English-language public",
                      "and Catholic elementary schools.")
 
-# 2017 -> "2017-18"
 year_label <- function(y) paste0(y, "-", substr(y + 1, 3, 4))
 
-# One theme for every chart
 theme_story <- theme_minimal(base_size = 11) +
   theme(plot.title = element_text(face = "bold", size = 12.5),
         plot.title.position = "plot",
@@ -45,6 +41,32 @@ theme_story <- theme_minimal(base_size = 11) +
         panel.grid.minor = element_blank(),
         legend.position = "top",
         legend.justification = "left")
+```
+
+```{css, echo = FALSE}
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.6;
+  color: #222;
+}
+.main-container {
+  max-width: 760px;
+}
+h1.title, h2 {
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: 700;
+}
+h1.title {
+  font-size: 34px;
+  margin-bottom: 0.8em;
+}
+h2 {
+  font-size: 24px;
+  border-top: 2px solid #2E6F9E;
+  padding-top: 0.5em;
+  margin-top: 2em;
+}
 ```
 
 
@@ -85,7 +107,7 @@ ggplot(avg_year, aes(x = year_short, y = pct, colour = grade,
                       guide = "none") +
   scale_x_discrete(expand = expansion(add = c(0.4, 1.3))) +
   scale_y_continuous(limits = c(60, 92), labels = scales::label_percent(scale = 1)) +
-  labs(title = "Figure 1. The provincial average barely moves",
+  labs(title = "Figure 1. The provincial average",
        subtitle = "Average share of students meeting the provincial reading standard",
        x = NULL, y = NULL, caption = source_note) +
   theme_story
@@ -129,8 +151,8 @@ ggplot() +
   scale_x_continuous(limits = c(58, 97), labels = scales::label_percent(scale = 1)) +
 
   scale_y_discrete(limits = rev) +
-  labs(title = "Figure 2. The Grade 3 gap is stuck; the Grade 6 gap is narrowing",
-       subtitle = "Share of students meeting the reading standard:\nmost affluent vs highest-poverty fifth of schools",
+  labs(title = "Figure 2. The Grade 3 gap and Grade 6 gap in income",
+       subtitle = "Students meeting the reading standard:\nmost affluent vs highest-poverty fifth of schools",
        x = NULL, y = NULL, caption = source_note) +
   theme_story +
   theme(panel.grid.major.y = element_blank(),
@@ -183,7 +205,7 @@ ggplot(follow_long, aes(x = when, y = pct, group = income_group, colour = income
   scale_x_discrete(expand = expansion(add = c(0.45, 1.75))) +
   scale_y_continuous(labels = scales::label_percent(scale = 1)) +
   labs(title = "Figure 3. Students in high-poverty schools gain the most",
-       subtitle = "Same schools, mostly the same students: Grade 3 reading and three years\nlater in Grade 6 (points gained in brackets)",
+       subtitle = "Same schools, mostly the same students: Grade 3 reading and three years\nlater in Grade 6",
        x = NULL, y = NULL, caption = source_note) +
   theme_story +
   theme(panel.grid.major.x = element_blank())
