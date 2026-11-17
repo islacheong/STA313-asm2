@@ -234,11 +234,10 @@ ggplot(lang_year2, aes(x = year_label(start_year), y = avg_read, colour = lang_g
         axis.text.x = element_text(size = 8))
 ```
 
-We asked whether reading results differ between schools with more and fewer students whose first language isn’t English. We compared schools by this share in Grade 3 and Grade 6 (Figure 4). Contrary to what we expected, schools where 10% or fewer of students have a first language other than English tended to have slightly lower reading results than schools where more than 30% do, in both grades, before testing was paused in 2019-20 and 2020-21. The gaps were small, about one percentage point or less in most years.
+We also examined whether schools with different proportions of students whose first language is not English demonstrate differences in reading performance. Figure 4 compares the average share of students who attained the provincial reading standard across these groups for both Grade 3 and Grade 6. Contrary to our expectation, the findings did not align with our initial assumption. Before EQAO testing was cancelled in 2019-20 and 2020-21, schools where 10% or fewer of students’ first language is not English generally recorded slightly lower reading scores than those where this proportion is 30% or more. Yet, the differences between the two groups were relatively small. 
 
-The pattern is clearer for the middle group. Schools with 10% to 30% of such students had the highest average results in nearly every year, in both grades. After testing resumed, the lowest-share group stayed near the bottom in Grade 3 until 2022-23, when its average rose to roughly match the middle group. Grade 6 did not show this catch-up.
+A more noticeable trend emerges among schools in the middle category. Those where students with a first language other than English account for 10% to 30% of total enrolment generally achieved the highest average results in almost every year, across both grades. Following the resumption of testing, schools with the lowest proportion of these students were seen to improve and their averages increased to levels comparable with the middle group in 2024-25. A similar improvement was not observed in Grade 6.
 
-Overall, reading results do not fall steadily as the share of students whose first language isn’t English rises. These are school averages, so they say nothing about how individual students are doing, and other factors such as school income levels may play a role.
 
 ## Limitations
 
