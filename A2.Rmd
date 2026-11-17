@@ -1,6 +1,11 @@
 ---
 title: "The Reading Gap: How Ontario Schools Compare"
-output: html_document
+output: 
+  pagedown::html_paged:
+    toc: false
+    number_sections: false
+    css:
+      - styles.css
 ---
 
 ```{r setup, include = FALSE}
