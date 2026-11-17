@@ -46,7 +46,7 @@ theme_story <- theme_minimal(base_size = 11) +
 ```{css, echo = FALSE}
 body {
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 17px;
+  font-size: 20px;
   line-height: 1.7;
   color: #222;
 }
