@@ -1,11 +1,8 @@
 ---
-title: "The Reading Gap: How Ontario Schools Compare"
-output: 
-  pagedown::html_paged:
-    toc: false
-    number_sections: false
-    css:
-      - styles.css
+title: 'The Reading Gap: How Ontario Schools Compare'
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include = FALSE}
@@ -79,7 +76,7 @@ Reading is one of the most important skills students learn in elementary school,
 
 Since 2017, Ontario students have dealt with school closures during the pandemic and two years with no provincial tests, and there has been a lot of debate about how reading should be taught. Even so, the overall reading results look surprisingly stable. In 2017-18, about 74% of Grade 3 students met the provincial reading standard in the average Ontario school, and in 2024-25 it was about the same.
 
-But a provincial average can hide big differences between schools. In this article we use school-level reading results to compare schools in richer and poorer areas of Ontario. How big is the gap between the most affluent and highest-poverty schools, and has it gotten smaller? Do high-poverty schools catch up by Grade 6? And does the share of students whose first language is not English have anything to do with reading results?
+But a provincial average can hide big differences between schools. In this article, we use school-level reading results to compare schools in richer and poorer areas of Ontario. How big is the gap between the most affluent and highest-poverty schools, and has it gotten smaller? Do high-poverty schools catch up by Grade 6? And does the share of students whose first language is not English have anything to do with reading results?
 
 
 ## Has provincial reading changed since 2017?
