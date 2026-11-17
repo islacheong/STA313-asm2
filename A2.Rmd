@@ -51,12 +51,12 @@ theme_story <- theme_minimal(base_size = 11) +
         legend.justification = "left")
 ```
 
-## Introduction
-Reading is a skill every other subject depends on. It is the fundamental tool that is required for all future academic learning, work and daily life. Students who read well by Grade 3 are better placed to handle math word problems, science, and history. Those who fall behind in reading tests early on, may experience long-term life outcomes if the issue is not addressed.
 
-Since 2017, students in Ontario have lived through school closures, two years of cancelled testing, and debate over how reading should be taught. Across Ontario schools, about 74% of Grade 3 students met the reading standard in 2017-18, and in 2024-25 it was still about 74%.
+Reading is a fundamental skill that shapes how students learn, communicate, and navigate everyday life. It is the foundation for learning across different subjects, from solving mathematical word problems, to understanding science and history. Students who developed a solid foundation in reading by Grade 3 are more likely to succeed academically, while those who struggle at an early stage may face challenges in their later education if these difficulties are not addressed. 
 
-But averages hide where the real differences are. Using school-level results across Ontario, we ask: how wide is the gap between schools with the most and fewest low-income families, and is it closing? Do students in higher poverty schools catch up by Grade 6? Is the gap really about English learners?
+Since 2017, students in Ontario have experienced significant disruptions to their education, including school closures due to pandemic, two years of cancelled assessments, and ongoing debates over how reading should be taught. Nevertheless, the overall reading performance appears remarkably stable. In 2017-18, about 74% of Grade 3 students across Ontario met the provincial reading standard. By 2024-25, the figure remained approximately the same.
+
+However, overall provincial figures may overlook significant variations in reading performance across schools. Using school-level reading results across Ontario, this article explores the relationship between students’ socioeconomic backgrounds and student reading achievement. How large is the performance gap between the most affluent and high-poverty schools, and has it narrowed over time? Do high-poverty schools make greater progress by Grade 6? Additionally, does the proportion of students whose first language is not English relate to reading performance?
 
 
 ## Has provincial reading changed since 2017?
