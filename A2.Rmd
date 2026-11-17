@@ -1,5 +1,5 @@
 ---
-title: "The Reading Gap? How schools in Ontario Compare"
+title: "The Reading Gap: How Ontario Schools Compare"
 output: html_document
 ---
 
@@ -24,8 +24,8 @@ income_cols <- c("Most affluent fifth"   = "#2E6F9E",
                  "Highest-poverty fifth" = "#B5432A")
 
 # Colours: share of students whose first language is not English (light to dark)
-lang_cols <- c("10% or fewer"  = "#CFC3E6",
-               "10% to 30%"    = "#9479C4",
+lang_cols <- c("10% or fewer"  = "#B3A0D9",
+               "10% to 30%"    = "#7D5CBF",
                "More than 30%" = "#4B2C8A")
 
 source_note <- paste("Source: Ontario Ministry of Education school information",
@@ -48,11 +48,11 @@ theme_story <- theme_minimal(base_size = 11) +
 ```
 
 
-Reading is a fundamental skill that shapes how students learn, communicate, and navigate everyday life. It is the foundation for learning across different subjects, from solving mathematical word problems, to understanding science and history. Students who developed a solid foundation in reading by Grade 3 are more likely to succeed academically, while those who struggle at an early stage may face challenges in their later education if these difficulties are not addressed. 
+Reading is one of the most important skills students learn in elementary school, because they need it for almost every other subject, from math word problems to science and history. Students who are strong readers by Grade 3 tend to do better in school later on, while students who struggle early can fall further behind if no one helps them.
 
-Since 2017, students in Ontario have experienced significant disruptions to their education, including school closures due to pandemic, two years of cancelled assessments, and ongoing debates over how reading should be taught. Nevertheless, the overall reading performance appears remarkably stable. In 2017-18, about 74% of Grade 3 students across Ontario met the provincial reading standard. By 2024-25, the figure remained approximately the same.
+Since 2017, Ontario students have dealt with school closures during the pandemic and two years with no provincial tests, and there has been a lot of debate about how reading should be taught. Even so, the overall reading results look surprisingly stable. In 2017-18, about 74% of Grade 3 students met the provincial reading standard in the average Ontario school, and in 2024-25 it was about the same.
 
-However, overall provincial figures may overlook significant variations in reading performance across schools. Using school-level reading results across Ontario, this article explores the relationship between students’ socioeconomic backgrounds and student reading achievement. How large is the performance gap between the most affluent and high-poverty schools, and has it narrowed over time? Do high-poverty schools make greater progress by Grade 6? Additionally, does the proportion of students whose first language is not English relate to reading performance?
+But a provincial average can hide big differences between schools. In this article we use school-level reading results to compare schools in richer and poorer areas of Ontario. How big is the gap between the most affluent and highest-poverty schools, and has it gotten smaller? Do high-poverty schools catch up by Grade 6? And does the share of students whose first language is not English have anything to do with reading results?
 
 
 ## Has provincial reading changed since 2017?
@@ -139,7 +139,7 @@ ggplot() +
 
 By dividing the schools into income groups we could see that the average was hiding a big difference. In Grade 3, the share of students meeting the standard in the most affluent fifth was around 15 to 16 percentage points higher than in the highest-poverty fifth (Figure 2). This did not change much from 2017-18 to 2024-25. This is a big difference, as in a class of 30 it means around 5 more children in a high-poverty school not meeting the provincial standard.
 
-In Grade 6 we were surprised to see that the gap decreased. Before the pandemic the gap was around the same as Grade 3 (around 15 points). However, once testing resumed in 2021-22 the gap was around 11 points, and in 2024-25 it was around 10. So although the gap stayed the same in Grade 3, it was smaller in Grade 6. The Grade 3 class of 2021-22 is the Grade 6 class of 2024-25, so we decided to look at these students.
+In Grade 6 we were surprised to see that the gap decreased. Before the pandemic the gap was around the same as Grade 3 (around 15 points). But once testing resumed in 2021-22 the gap was around 11 points, and in 2024-25 it was around 10. So although the gap stayed the same in Grade 3, it was smaller in Grade 6. The Grade 3 class of 2021-22 is the Grade 6 class of 2024-25, so we decided to look at these students.
 
 ## Do students in poorer schools catch up from Grade 3 to Grade 6?
 
@@ -189,11 +189,11 @@ ggplot(follow_long, aes(x = when, y = pct, group = income_group, colour = income
   theme(panel.grid.major.x = element_blank())
 ```
 
-We compared the Grade 3 results in 2021-22 to the Grade 6 results 3 years later. All groups improved, however the high-poverty schools improved the most (around 16 points) compared to the most affluent schools (around 11 points) (Figure 3). This meant that by Grade 6 the gap between the two groups had decreased from around 15 points to around 10. We looked at the previous class (Grade 3 in 2018-19 to Grade 6 in 2021-22) and saw this trend again, however it was not as big (the gap went from about 14.5 points to 11.5).
+We compared the Grade 3 results in 2021-22 to the Grade 6 results 3 years later, using only schools that had both results. All groups improved, but the high-poverty schools improved the most (around 17 points) compared to the most affluent schools (around 11 points) (Figure 3). This meant that the gap between the two groups went from around 16 points in Grade 3 to around 10 in Grade 6. We looked at the previous class (Grade 3 in 2018-19 to Grade 6 in 2021-22) and saw this trend again, but it was not as big (the gap went from about 15 points to 11).
 
-Something to note is that the most affluent schools were already high, and by Grade 6 they were close to 90% (around 89%), so they did not have much room to improve. However, the high-poverty schools started so far behind that the gap did not fully close. The highest-poverty schools also have more students whose first language is not English. In 2017-18 it was about 36% of students on average, compared to 11% in the most affluent schools, so we wanted to see if this was the reason for the gap.
+Something to note is that the most affluent schools were already high, and by Grade 6 they were close to 90% (around 89%), so they did not have much room to improve. Still, the high-poverty schools started so far behind that the gap did not fully close. The highest-poverty schools also have more students whose first language is not English. In 2017-18 it was about 36% of students on average, compared to 11% in the most affluent schools, so we wanted to see if this was the reason for the gap.
 
-## Is the gap really about English learners?
+## Is the gap really about language?
 
 ```{r s4-data}
 lang_year2 <- elem |>
@@ -230,9 +230,11 @@ ggplot(lang_year2, aes(x = year_label(start_year), y = avg_read, colour = lang_g
         axis.text.x = element_text(size = 8))
 ```
 
-We also examined whether schools with different proportions of students whose first language is not English demonstrate differences in reading performance. Figure 4 compares the average share of students who attained the provincial reading standard across these groups for both Grade 3 and Grade 6. Contrary to our expectation, the findings did not align with our initial assumption. Before EQAO testing was cancelled in 2019-20 and 2020-21, schools where 10% or fewer of students’ first language is not English generally recorded slightly lower reading scores than those where this proportion is 30% or more. Yet, the differences between the two groups were relatively small. 
+Next, we looked at whether schools with more students whose first language is not English have lower reading results. We split schools into three groups: 10% or fewer, 10% to 30%, and more than 30% of students (Figure 4). We expected schools with more of these students to score lower, but that is not really what we found. Before testing was paused in 2019-20 and 2020-21, schools with 10% or fewer of these students scored about the same as or slightly lower than schools with more than 30%, in both grades. The differences were small though (around 1 point or less).
 
-A more noticeable trend emerges among schools in the middle category. Those where students with a first language other than English account for 10% to 30% of total enrolment generally achieved the highest average results in almost every year, across both grades. Following the resumption of testing, schools with the lowest proportion of these students were seen to improve and their averages increased to levels comparable with the middle group in 2024-25. A similar improvement was not observed in Grade 6.
+The middle group (10% to 30%) had the highest average in almost every year in both grades. After testing came back, things changed a bit in Grade 3. From 2022-23 on, the more than 30% group was the lowest, around 2 to 3 points behind the other two groups by 2024-25. The 10% or fewer group was the lowest in 2021-22, but by 2024-25 it had caught up to the middle group (both around 74%). This did not happen in Grade 6, where the 10% or fewer and more than 30% groups stayed close together and below the middle group.
+
+So reading results do not steadily go down as the share of these students goes up. Schools with more of these students are also more likely to be in high-poverty areas (Section 3), so income may explain some of the Grade 3 drop for the more than 30% group.
 
 
 ## Limitations
@@ -244,12 +246,12 @@ There were also a few issues with the data. Schools where fewer than 10 students
 When comparing Grade 3 and Grade 6, students move schools, so it is not exactly the same students. The most affluent schools also had little room to improve. The test was also online after the pandemic, so there may be some differences in the results. If we had student-level data or weighted the data by the number of students, we could be more precise with our findings.
 
 ## Conclusion
-Ontario’s average reading results have remained relatively stable, yet the overall trend hides a persistent achievement gap between schools in different income areas. About 74% of Grade 3 students in the average school continue to meet the reading standard after seven years. However, schools in the highest-poverty group score approximately 16 percentage points lower than those in the most affluent, with little improvement over time. 
+Ontario's average reading results have stayed fairly stable, but the average hides a big gap between schools in richer and poorer areas. In the average school, about 74% of Grade 3 students met the reading standard in both 2017-18 and 2024-25, but Grade 3 results in the highest-poverty schools were around 16 percentage points lower than in the most affluent schools, and this gap barely changed over the years.
 
-Nonetheless, our findings suggest that this gap can be reduced. By Grade 6, the difference in proportion of students meeting the provincial reading standard between the most affluent and highest-poverty schools had narrowed to about 10 percentage points (from about 15). As we followed the same cohorts of schools from Grade 3 to Grade 6, we discovered that schools in the highest-poverty group make the largest gains. Despite the improvement, the gap between the two groups remained significant. This suggests providing additional reading support at a younger age could be especially crucial.
+When we followed the same schools from Grade 3 to Grade 6, the highest-poverty schools made the biggest gains, and the gap went from about 16 points to about 10. Even so, the gap did not close. Since high-poverty schools are already so far behind by Grade 3, giving students extra reading support earlier could make a big difference.
 
-In addition, language diversity does not appear to be a major factor to the disparity of reading achievements. Schools with a larger share of students whose first language is not English do not necessarily perform worse in reading. In fact, schools where these students made up 10% to 30% of total enrollment tend to perform the best. This suggests that socioeconomic factors may be more closely related to differences in reading achievements than the language background of students. 
+Language does not seem to explain the gap. Schools with more students whose first language is not English did not always do worse in reading, and schools where these students made up 10% to 30% of enrollment did the best. This suggests that the income level of the area may matter more than students' language background, although we did not test this directly.
 
-One key takeaway is that disparities in reading performance are already significant by Grade 3. While high-poverty schools show greater progress by Grade 6, they still struggle to catch up with the most affluent schools. This raises an important question for policymakers and educators: should interventions begin even sooner to help bridge the gap, if these inequalities emerge so early?
+The gap is already large by Grade 3. High-poverty schools catch up a bit by Grade 6, but they still end up behind the most affluent schools. Since the gap shows up this early, extra help for struggling readers should probably start before Grade 3 instead of waiting for the Grade 3 test results.
 
 
